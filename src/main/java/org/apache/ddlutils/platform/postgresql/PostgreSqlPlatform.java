@@ -320,4 +320,10 @@ public class PostgreSqlPlatform extends PlatformImplBase
         ((PostgreSqlBuilder)getSqlBuilder()).dropColumn(changedTable, removedColumn);
         change.apply(currentModel, isDelimitedIdentifierModeOn());
     }
+
+
+    @Override
+    public String getTableRenameSQL(String tableOldName, String tableNewName) {
+        return "ALTER TABLE "+tableOldName+" RENAME TO "+tableNewName;
+    }
 }

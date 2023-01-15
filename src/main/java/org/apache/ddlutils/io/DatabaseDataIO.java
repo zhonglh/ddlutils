@@ -487,6 +487,7 @@ public class DatabaseDataIO
             }
             finally
             {
+
                 if (connection != null)
                 {
                     try

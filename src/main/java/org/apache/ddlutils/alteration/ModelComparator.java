@@ -139,6 +139,10 @@ public class ModelComparator
         return compareModels(sourceModel, intermediateModel, targetModel);
     }
 
+    public Database cloneDatabase(Database sourceModel){
+        return _cloneHelper.clone(sourceModel);
+    }
+
     /**
      * Compares the given source and target models and creates change objects to get from
      * the source to the target one. These changes will be applied to the given
@@ -376,7 +380,9 @@ public class ModelComparator
         // TOOD: check for foreign key changes (on delete/on update)
         if (!tableDefinitionChanges.isEmpty())
         {
-            if ((_tableDefCangePredicate == null) || _tableDefCangePredicate.areSupported(tmpTable, tableDefinitionChanges))
+            changes.addAll(tableDefinitionChanges);
+
+            /*if ((_tableDefCangePredicate == null) || _tableDefCangePredicate.areSupported(tmpTable, tableDefinitionChanges))
             {
                 changes.addAll(tableDefinitionChanges);
             }
@@ -424,7 +430,7 @@ public class ModelComparator
 
                 changes.add(tableChange);
                 tableChange.apply(intermediateModel, _caseSensitive);
-            }
+            }*/
         }
         
         changes.addAll(checkForAddedIndexes(sourceModel, sourceTable, intermediateModel, intermediateTable, targetModel, targetTable));

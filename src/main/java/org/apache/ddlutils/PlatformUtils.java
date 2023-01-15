@@ -261,6 +261,7 @@ public class PlatformUtils
         }
         finally
         {
+
             if (connection != null)
             {
                 try

@@ -298,4 +298,13 @@ public class MySqlBuilder extends SqlBuilder
             printIdentifier(getColumnName(sourceColumn));
         }
     }
+
+
+
+    protected void printColumnComment(Column column) throws IOException{
+        print(" ");
+        print("COMMENT '");
+        print(column.getDescription());
+        print("'");
+    }
 }

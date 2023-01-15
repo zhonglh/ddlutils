@@ -223,4 +223,9 @@ public class Oracle8Platform extends PlatformImplBase
         getSqlBuilder().createPrimaryKey(changedTable, newPKColumns);
         change.apply(currentModel, isDelimitedIdentifierModeOn());
     }
+
+    @Override
+    public String getTableRenameSQL(String tableOldName, String tableNewName) {
+        return "ALTER TABLE "+tableOldName+" RENAME TO "+tableNewName;
+    }
 }

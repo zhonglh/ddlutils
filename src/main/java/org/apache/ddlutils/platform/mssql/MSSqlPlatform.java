@@ -321,4 +321,9 @@ public class MSSqlPlatform extends PlatformImplBase
         getSqlBuilder().createPrimaryKey(changedTable, newPKColumns);
         change.apply(currentModel, isDelimitedIdentifierModeOn());
     }
+
+    @Override
+    public String getTableRenameSQL(String tableOldName, String tableNewName) {
+        return "exec sp_rename  '"+tableOldName+"', '"+tableNewName +"'";
+    }
 }

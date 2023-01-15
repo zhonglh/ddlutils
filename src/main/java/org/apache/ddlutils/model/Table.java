@@ -53,6 +53,10 @@ public class Table implements Serializable
     private String _description = null;
     /** The table's type as read from the database. */
     private String _type = null;
+
+    //The table is temporary ?
+    private boolean _isTemporary ;
+
     /** The columns in this table. */
     private ArrayList _columns = new ArrayList();
     /** The foreign keys associated to this table. */
@@ -159,6 +163,20 @@ public class Table implements Serializable
     {
         _description = description;
     }
+
+
+    public boolean isTemporary()
+    {
+        return _isTemporary;
+    }
+
+    public void setTemporary(boolean isTemporary)
+    {
+        _isTemporary = isTemporary;
+    }
+
+
+
 
     /**
      * Returns the number of columns in this table.

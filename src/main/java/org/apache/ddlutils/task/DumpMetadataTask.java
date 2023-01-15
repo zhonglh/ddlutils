@@ -256,6 +256,7 @@ public class DumpMetadataTask extends Task
         }
         finally
         {
+
             if (connection != null)
             {
                 try

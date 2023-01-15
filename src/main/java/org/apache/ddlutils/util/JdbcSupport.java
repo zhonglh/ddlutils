@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import javax.sql.DataSource;
+import javax.swing.text.TabableView;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -216,5 +217,9 @@ public abstract class JdbcSupport
                 _log.debug("Ignoring exception that occurred while closing statement", e);
             }
         }
+    }
+
+    public String getTableRenameSQL(String tableOldName, String tableNewName){
+        return "RENAME TABLE " + tableOldName + " TO " + tableNewName;
     }
 }

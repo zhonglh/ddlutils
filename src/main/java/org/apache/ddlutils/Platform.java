@@ -1213,4 +1213,13 @@ public interface Platform
      * @throws DatabaseOperationException If an error occurred during reading the model
      */
     public Database readModelFromDatabase(Connection connection, String name, String catalog, String schema, String[] tableTypes) throws DatabaseOperationException;
+
+    /**
+     * get table rename sql
+     * @param tableOldName
+     * @param tableNewName
+     * @return
+     */
+    String getTableRenameSQL(String tableOldName, String tableNewName);
+
 }

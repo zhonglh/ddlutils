@@ -43,11 +43,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ddlutils.DatabaseOperationException;
@@ -338,6 +340,12 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
      */
     public int evaluateBatch(Connection connection, String sql, boolean continueOnError) throws DatabaseOperationException
     {
+        if(StringUtils.isEmpty(sql)){
+            return 0;
+        }
+
+        System.out.println(sql);
+
         Statement statement    = null;
         int       errors       = 0;
         int       commandCount = 0;
@@ -991,9 +999,7 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
      */
     public void alterModel(Connection connection, Database currentModel, Database desiredModel, boolean continueOnError) throws DatabaseOperationException
     {
-        String sql = getAlterModelSql(currentModel, desiredModel);
-
-        evaluateBatch(connection, sql, continueOnError);
+        alterModel(connection, currentModel , desiredModel , null , continueOnError);
     }
 
     /**
@@ -1001,18 +1007,158 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
      */
     public void alterModel(Connection connection, Database currentModel, Database desiredModel, CreationParameters params, boolean continueOnError) throws DatabaseOperationException
     {
-        String sql = getAlterModelSql(currentModel, desiredModel, params);
 
+        Map<String, Table> tableMap = Arrays.stream(desiredModel.getTables()).collect(Collectors.toMap(o->{
+            return o.getName().toLowerCase();
+        }, o -> o));
+        for(Table temp : currentModel.getTables()){
+            if(!tableMap.containsKey(temp.getName().toLowerCase())){
+                currentModel.removeTable(temp);
+            }
+        }
+
+
+        String sql = getAlterModelSql(currentModel, desiredModel, params);
+        if(StringUtils.isEmpty(sql)){
+            return;
+        }
+
+
+        if(continueOnError) {
+            evaluateBatch(connection, sql, continueOnError);
+        }else{
+
+            Database intermediateModel = getModelComparator().cloneDatabase(currentModel);
+            try {
+                createBackupTables(connection, currentModel,intermediateModel, desiredModel,params);
+            }catch (Exception e){
+                dropBackupTable(connection,currentModel,intermediateModel,desiredModel,params);
+                return ;
+            }
+            try{
+                int size =  evaluateBatch(connection, sql, continueOnError);
+            }catch (Exception e){
+                e.printStackTrace();
+                rollbackBackupTables(connection,currentModel,intermediateModel,desiredModel,params);
+            }finally {
+                dropBackupTable(connection,currentModel,intermediateModel,desiredModel,params);
+            }
+
+
+        }
+    }
+
+
+
+    public void createBackupTables(Connection connection, Database currentModel, Database intermediateModel, Database desiredModel, CreationParameters params) {
+        String sql = getCreateBackupTables(intermediateModel, desiredModel, params);
+        evaluateBatch(connection, sql, false);
+    }
+
+    public String getCreateBackupTables(Database intermediateModel, Database desiredModel, CreationParameters params) {
+        String sql = null;
+        try
+        {
+            StringWriter buffer = new StringWriter();
+            getSqlBuilder().setWriter(buffer);
+            processCreateBackupTables(intermediateModel, params);
+            sql = buffer.toString();
+        }
+        catch (IOException ex)
+        {
+            // won't happen because we're using a string writer
+        }
+        return sql;
+    }
+
+    public void processCreateBackupTables(Database intermediateModel, CreationParameters params)throws IOException {
+        List<Table> temporaryTables = new ArrayList<>();
+        for(int index = 0 ; index < intermediateModel.getTableCount() ; index++) {
+            Table table = intermediateModel.getTable(index);
+            Map parameters = (params == null ? null : params.getParametersFor(table));
+            Table tempTable = getTemporaryTableFor(table);
+            getSqlBuilder().createTemporaryTable(intermediateModel, tempTable, parameters);
+            getSqlBuilder().copyData(table, tempTable);
+            temporaryTables.add(tempTable);
+        }
+
+        if(!temporaryTables.isEmpty()) {
+            intermediateModel.addTables(temporaryTables);
+        }
+
+    }
+
+
+    public void dropBackupTable(Connection connection, Database currentModel, Database intermediateModel, Database desiredModel, CreationParameters params) {
+        //delete temporary table
+        for(Table table : intermediateModel.getTables()){
+            if(table.isTemporary()){
+                dropTable(connection , intermediateModel , table , true);
+                intermediateModel.removeTable(table);
+            }
+        }
+
+    }
+
+
+    /**
+     * Delete the original table
+     * Change the temporary form to the formal form
+     */
+    public void rollbackBackupTables(Connection connection,Database currentModel, Database intermediateModel, Database desiredModel, CreationParameters params) {
+        dropOriginalTables(connection , currentModel , intermediateModel ,desiredModel, true);
+        renameBackupTables(connection , currentModel , intermediateModel , true);
+    }
+
+    public void dropOriginalTables(Connection connection, Database currentModel, Database intermediateModel, Database desiredModel, boolean continueOnError) {
+        dropTables(connection , desiredModel , true);
+
+    }
+
+
+    public void renameBackupTables(Connection connection, Database currentModel, Database intermediateModel, boolean continueOnError) {
+        String sql = getRenameBackupTables(currentModel , intermediateModel);
         evaluateBatch(connection, sql, continueOnError);
     }
 
-	/**
+    public String getRenameBackupTables(Database currentModel, Database intermediateModel) {
+        String sql = null;
+        try
+        {
+            StringWriter buffer = new StringWriter();
+            getSqlBuilder().setWriter(buffer);
+            processRenameBackupTables(intermediateModel);
+            sql = buffer.toString();
+        }
+        catch (IOException ex)
+        {
+            // won't happen because we're using a string writer
+        }
+        return sql;
+
+    }
+
+    public void processRenameBackupTables(Database intermediateModel)throws IOException {
+        for(Table table : intermediateModel.getTables()){
+            if(!table.isTemporary()){
+                continue;
+            }
+            String oldName = table.getName();
+            String newName = table.getName().substring(0, table.getName().length() -1);
+            table.setName(newName);
+            this.getSqlBuilder().renameTable(oldName,newName);
+            table.setTemporary(false);
+        }
+
+    }
+
+
+    /**
      * {@inheritDoc}
      */
     public void dropTable(Connection connection, Database model, Table table, boolean continueOnError) throws DatabaseOperationException
     {
         String sql = getDropTableSql(model, table, continueOnError);
-
         evaluateBatch(connection, sql, continueOnError);
     }
 
@@ -1518,10 +1664,13 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
         table.setSchema(targetTable.getSchema());
         table.setName(targetTable.getName() + "_");
         table.setType(targetTable.getType());
+        table.setTemporary(true);
         for (int idx = 0; idx < targetTable.getColumnCount(); idx++)
         {
-            // TODO: clone PK status ?
             table.addColumn(cloneHelper.clone(targetTable.getColumn(idx), true));
+        }
+        for(int index = 0; index < targetTable.getIndexCount() ; index++){
+            table.addIndex(cloneHelper.clone(targetTable.getIndex(index),table , false));
         }
 
         return table;

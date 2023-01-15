@@ -19,6 +19,7 @@ package org.apache.ddlutils.alteration;
  * under the License.
  */
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.ddlutils.PlatformInfo;
 import org.apache.ddlutils.model.Column;
 import org.apache.ddlutils.model.Database;
@@ -73,7 +74,8 @@ public class ColumnDefinitionChange extends ColumnChangeImplBase
                isSizeChanged(platformInfo, sourceColumn, targetColumn) ||
                isDefaultValueChanged(sourceColumn, targetColumn) ||
                isRequiredStatusChanged(sourceColumn, targetColumn) ||
-               isAutoIncrementChanged(sourceColumn, targetColumn);
+               isAutoIncrementChanged(sourceColumn, targetColumn) ||
+               isCommentChanged(sourceColumn , targetColumn);
     }
 
     /**
@@ -199,6 +201,13 @@ public class ColumnDefinitionChange extends ColumnChangeImplBase
     {
         return sourceColumn.isAutoIncrement() != targetColumn.isAutoIncrement();
     }
+
+
+    public static boolean isCommentChanged(Column sourceColumn, Column targetColumn)
+    {
+        return !StringUtils.equals(sourceColumn.getDescription() , targetColumn.getDescription());
+    }
+
 
     /**
      * {@inheritDoc}

@@ -551,6 +551,8 @@ public abstract class SqlBuilder
         writeTableCreationStmt(database, table, parameters);
         writeTableCreationStmtEnding(table, parameters);
 
+        printColumnComments(table);
+
         if (!getPlatformInfo().isPrimaryKeyEmbedded())
         {
             createPrimaryKey(table, table.getPrimaryKeyColumns());
@@ -559,6 +561,7 @@ public abstract class SqlBuilder
         {
             createIndexes(table);
         }
+
     }
 
     /**
@@ -809,6 +812,14 @@ public abstract class SqlBuilder
     {
         print("DROP TABLE ");
         printIdentifier(getTableName(table));
+        printEndOfStatement();
+    }
+
+
+    public void renameTable(String oldName , String newName) throws IOException
+    {
+        String sql = this.getPlatform().getTableRenameSQL(oldName, newName);
+        print(sql);
         printEndOfStatement();
     }
 
@@ -1257,9 +1268,9 @@ public abstract class SqlBuilder
      */
     protected void writeTableComment(Table table) throws IOException
     {
-        printComment("-----------------------------------------------------------------------");
-        printComment(getTableName(table));
-        printComment("-----------------------------------------------------------------------");
+        printColumnComment("-----------------------------------------------------------------------");
+        printColumnComment(getTableName(table));
+        printColumnComment("-----------------------------------------------------------------------");
         println();
     }
 
@@ -1382,6 +1393,18 @@ public abstract class SqlBuilder
             print(" ");
             writeColumnAutoIncrementStmt(table, column);
         }
+
+        if(StringUtils.isNotEmpty(column.getDescription())){
+            printColumnComment(column);
+        }
+    }
+
+    protected void printColumnComment(Column column) throws IOException{
+
+    }
+
+    protected void printColumnComments(Table table) throws IOException{
+
     }
 
     /**
@@ -2059,7 +2082,7 @@ public abstract class SqlBuilder
      * 
      * @param text The comment text
      */
-    protected void printComment(String text) throws IOException
+    protected void printColumnComment(String text) throws IOException
     {
         if (getPlatform().isSqlCommentsOn())
         {

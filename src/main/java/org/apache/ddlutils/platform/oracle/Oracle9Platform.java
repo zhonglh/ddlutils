@@ -47,4 +47,6 @@ public class Oracle9Platform extends Oracle8Platform
     {
         return DATABASENAME;
     }
+
+
 }
