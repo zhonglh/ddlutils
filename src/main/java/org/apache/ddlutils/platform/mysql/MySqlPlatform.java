@@ -107,10 +107,11 @@ public class MySqlPlatform extends PlatformImplBase
         // In MySql, TINYINT has only a range of -128 to 127
         info.addNativeTypeMapping(Types.TINYINT,       "SMALLINT",          Types.SMALLINT);
 
-        info.setDefaultSize(Types.CHAR,      254);
-        info.setDefaultSize(Types.VARCHAR,   254);
-        info.setDefaultSize(Types.BINARY,    254);
-        info.setDefaultSize(Types.VARBINARY, 254);
+        info.setDefaultSize(Types.CHAR,      255);
+        info.setDefaultSize(Types.VARCHAR,   255);
+        info.setDefaultSize(Types.BINARY,    255);
+        info.setDefaultSize(Types.VARBINARY, 255);
+        info.setDefaultSize(Types.TIMESTAMP,      3);
         
         setSqlBuilder(new MySqlBuilder(this));
         setModelReader(new MySqlModelReader(this));

@@ -1491,6 +1491,7 @@ public abstract class SqlBuilder
         {
             sizeSpec = getPlatformInfo().getDefaultSize(column.getTypeCode());
         }
+
         if (sizeSpec != null)
         {
             if (getPlatformInfo().hasSize(column.getTypeCode()))

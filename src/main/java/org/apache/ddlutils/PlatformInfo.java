@@ -206,6 +206,17 @@ public class PlatformInfo
         _typesWithSize.add(new Integer(Types.BINARY));
         _typesWithSize.add(new Integer(Types.VARBINARY));
 
+        /*_typesWithSize.add(new Integer(Types.TINYINT));
+        _typesWithSize.add(new Integer(Types.SMALLINT));
+        _typesWithSize.add(new Integer(Types.INTEGER));
+        _typesWithSize.add(new Integer(Types.BIGINT));
+        _typesWithSize.add(new Integer(Types.TIMESTAMP));*/
+
+
+
+
+        _typesWithPrecisionAndScale.add(new Integer(Types.DOUBLE));
+        _typesWithPrecisionAndScale.add(new Integer(Types.FLOAT));
         _typesWithPrecisionAndScale.add(new Integer(Types.DECIMAL));
         _typesWithPrecisionAndScale.add(new Integer(Types.NUMERIC));
 

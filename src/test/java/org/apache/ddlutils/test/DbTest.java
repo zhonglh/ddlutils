@@ -14,7 +14,7 @@ public class DbTest extends DdlUtilsBaseTest {
 
     @Test
     public void testCreateTable(){
-        /*Database database = new Database();
+        Database database = new Database();
 
         Table table = new Table();
         table.setName("test20230106");
@@ -31,7 +31,7 @@ public class DbTest extends DdlUtilsBaseTest {
         column1.setDescription("AAA");
         column1.setTypeCode(Types.VARCHAR);
         column1.setRequired(true);
-        column1.setSize("1000");
+        column1.setSize("80");
 
         Column column2 = new Column();
         column2.setName("bb");
@@ -40,9 +40,18 @@ public class DbTest extends DdlUtilsBaseTest {
         column2.setRequired(true);
         column2.setSize("3");
 
+
+        Column column3 = new Column();
+        column3.setName("cc");
+        column3.setDescription("工资");
+        column3.setTypeCode(Types.DECIMAL);
+        column3.setRequired(true);
+        column3.setSize("3,2");
+
         table.addColumn(column0);
         table.addColumn(column1);
         table.addColumn(column2);
+        table.addColumn(column3);
 
         UniqueIndex uniqueIndex = new UniqueIndex();
         uniqueIndex.setName("unique1");
@@ -61,7 +70,7 @@ public class DbTest extends DdlUtilsBaseTest {
 
         database.addTable(table);
 
-        this.platform.createModel(database,false , false);*/
+        this.platform.createModel(database,false , false);
     }
 
 
