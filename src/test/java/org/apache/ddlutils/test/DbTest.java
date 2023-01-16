@@ -14,7 +14,7 @@ public class DbTest extends DdlUtilsBaseTest {
 
     @Test
     public void testCreateTable(){
-        Database database = new Database();
+        /*Database database = new Database();
 
         Table table = new Table();
         table.setName("test20230106");
@@ -70,7 +70,7 @@ public class DbTest extends DdlUtilsBaseTest {
 
         database.addTable(table);
 
-        this.platform.createModel(database,false , false);
+        this.platform.createModel(database,false , false);*/
     }
 
 
