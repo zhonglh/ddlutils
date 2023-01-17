@@ -160,8 +160,8 @@ public class ModelComparator
     {
         ArrayList changes = new ArrayList();
 
-        changes.addAll(checkForRemovedForeignKeys(sourceModel, intermediateModel, targetModel));
-        changes.addAll(checkForRemovedTables(sourceModel, intermediateModel, targetModel));
+        //changes.addAll(checkForRemovedForeignKeys(sourceModel, intermediateModel, targetModel));
+        //changes.addAll(checkForRemovedTables(sourceModel, intermediateModel, targetModel));
 
         for (int tableIdx = 0; tableIdx < intermediateModel.getTableCount(); tableIdx++)
         {
