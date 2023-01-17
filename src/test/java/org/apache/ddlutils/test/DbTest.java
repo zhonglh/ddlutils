@@ -14,7 +14,8 @@ public class DbTest extends DdlUtilsBaseTest {
 
     @Test
     public void testCreateTable(){
-        /*Database database = new Database();
+        /*
+        Database database = new Database();
 
         Table table = new Table();
         table.setName("test20230106");
@@ -36,7 +37,7 @@ public class DbTest extends DdlUtilsBaseTest {
         Column column2 = new Column();
         column2.setName("bb");
         column2.setDescription("年龄");
-        column2.setTypeCode(Types.INTEGER);
+        column2.setTypeCode(Types.JAVA_OBJECT);
         column2.setRequired(true);
         column2.setSize("3");
 
@@ -70,7 +71,9 @@ public class DbTest extends DdlUtilsBaseTest {
 
         database.addTable(table);
 
-        this.platform.createModel(database,false , false);*/
+        this.platform.createModel(database,false , false);
+        */
+
     }
 
 

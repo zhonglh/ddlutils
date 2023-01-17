@@ -91,7 +91,7 @@ public class MySqlPlatform extends PlatformImplBase
         info.addNativeTypeMapping(Types.DATALINK,      "MEDIUMBLOB", Types.LONGVARBINARY);
         info.addNativeTypeMapping(Types.DISTINCT,      "LONGBLOB",   Types.LONGVARBINARY);
         info.addNativeTypeMapping(Types.FLOAT,         "DOUBLE",     Types.DOUBLE);
-        info.addNativeTypeMapping(Types.JAVA_OBJECT,   "LONGBLOB",   Types.LONGVARBINARY);
+        info.addNativeTypeMapping(Types.JAVA_OBJECT,   "JSON",       Types.JAVA_OBJECT);
         info.addNativeTypeMapping(Types.LONGVARBINARY, "MEDIUMBLOB");
         info.addNativeTypeMapping(Types.LONGVARCHAR,   "MEDIUMTEXT");
         info.addNativeTypeMapping(Types.NULL,          "MEDIUMBLOB", Types.LONGVARBINARY);
