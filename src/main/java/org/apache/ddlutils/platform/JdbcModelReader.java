@@ -1142,9 +1142,7 @@ public class JdbcModelReader
         try
         {
             stmt = getConnection().createStatement();
-            System.out.println(query.toString());
             ResultSet         rs         = stmt.executeQuery(query.toString());
-            System.out.println("11111111");
             ResultSetMetaData rsMetaData = rs.getMetaData();
         
             for (int idx = 0; idx < columnsToCheck.length; idx++)
