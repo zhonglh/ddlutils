@@ -80,7 +80,8 @@ public class DbTest extends DdlUtilsBaseTest {
 
     @Test
     public void testAlterTable(){
-        /*Database database = new Database();
+
+        Database database = new Database();
 
         Table table = new Table();
         table.setName("test20230106");
@@ -128,7 +129,7 @@ public class DbTest extends DdlUtilsBaseTest {
             platform.alterModel(currentModel, database, false);
         } finally {
             platform.returnConnection(connection);
-        }*/
+        }
 
     }
 }

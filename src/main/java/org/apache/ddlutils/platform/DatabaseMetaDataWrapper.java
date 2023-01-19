@@ -148,7 +148,9 @@ public class DatabaseMetaDataWrapper
      */
     public String escapeForSearch(String literalString) throws SQLException
     {
-        String escape = getMetaData().getSearchStringEscape();
+        return literalString;
+        //todo , 改为直接的表名
+        /*String escape = getMetaData().getSearchStringEscape();
 
         if (escape == "")
         {
@@ -179,7 +181,7 @@ public class DatabaseMetaDataWrapper
             quotedEscape.append("$0");
 
             return searchStringPattern.matcher(literalString).replaceAll(quotedEscape.toString());
-        }
+        }*/
     }
 
     /**

@@ -943,6 +943,9 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
     public String getAlterModelSql(Database currentModel, Database desiredModel, CreationParameters params) throws DatabaseOperationException
     {
         List   changes = getChanges(currentModel, desiredModel);
+        if(changes == null || changes.isEmpty()){
+            return null;
+        }
         String sql     = null;
 
         try
