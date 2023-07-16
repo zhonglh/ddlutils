@@ -1,7 +1,10 @@
 package org.apache.ddlutils.test;
 
 
+import org.apache.ddlutils.DatabaseOperationException;
+import org.apache.ddlutils.PlatformUtils;
 import org.apache.ddlutils.model.*;
+import org.apache.ddlutils.platform.CreationParameters;
 import org.junit.Test;
 
 import java.sql.Connection;
@@ -128,6 +131,28 @@ public class DbTest extends DdlUtilsBaseTest {
 
             platform.alterModel(currentModel, database, false);
         } finally {
+            platform.returnConnection(connection);
+        }
+
+    }
+
+
+
+
+    @Test
+    public void testGetAllTable(){
+
+
+        Connection connection = platform.borrowConnection();
+        try
+        {
+            Database currentModel = platform.readModelFromDatabase(connection, null);
+            for(Table table : currentModel.getTables()){
+                System.out.println("ALTER TABLE "+table.getName()+" MODIFY COLUMN deleted bigint(20) NOT NULL DEFAULT 0 COMMENT '是否删除' AFTER `create_by`;");
+            }
+        }
+        finally
+        {
             platform.returnConnection(connection);
         }
 

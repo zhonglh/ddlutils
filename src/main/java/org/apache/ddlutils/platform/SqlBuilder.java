@@ -551,7 +551,7 @@ public abstract class SqlBuilder
         writeTableCreationStmt(database, table, parameters);
         writeTableCreationStmtEnding(table, parameters);
 
-        printColumnComments(table);
+        printTableComments(table);
 
         if (!getPlatformInfo().isPrimaryKeyEmbedded())
         {
@@ -1403,8 +1403,8 @@ public abstract class SqlBuilder
 
     }
 
-    protected void printColumnComments(Table table) throws IOException{
-
+    protected void printTableComments(Table table) throws IOException{
+        print(" ALTER TABLE "+ getTableName(table) +" COMMENT = '"+table.getDescription()+"'; ");
     }
 
     /**
