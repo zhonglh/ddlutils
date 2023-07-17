@@ -1011,16 +1011,6 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
     public void alterModel(Connection connection, Database currentModel, Database desiredModel, CreationParameters params, boolean continueOnError) throws DatabaseOperationException
     {
 
-        Map<String, Table> tableMap = Arrays.stream(desiredModel.getTables()).collect(Collectors.toMap(o->{
-            return o.getName().toLowerCase();
-        }, o -> o));
-        for(Table temp : currentModel.getTables()){
-            if(!tableMap.containsKey(temp.getName().toLowerCase())){
-                currentModel.removeTable(temp);
-            }
-        }
-
-
         String sql = getAlterModelSql(currentModel, desiredModel, params);
         if(StringUtils.isEmpty(sql)){
             return;
@@ -1030,7 +1020,6 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
         if(continueOnError) {
             evaluateBatch(connection, sql, continueOnError);
         }else{
-
             Database intermediateModel = getModelComparator().cloneDatabase(currentModel);
             try {
                 createBackupTables(connection, currentModel,intermediateModel, desiredModel,params);
@@ -1130,7 +1119,7 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
         {
             StringWriter buffer = new StringWriter();
             getSqlBuilder().setWriter(buffer);
-            processRenameBackupTables(intermediateModel);
+            processRenameBackupTables(currentModel);
             sql = buffer.toString();
         }
         catch (IOException ex)
