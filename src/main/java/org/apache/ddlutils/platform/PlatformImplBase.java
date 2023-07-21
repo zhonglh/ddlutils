@@ -1083,9 +1083,9 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 
     public void dropBackupTable(Connection connection, Database currentModel, Database intermediateModel, Database desiredModel, CreationParameters params) {
         //delete temporary table
-        for(Table table : intermediateModel.getTables()){
+        for(Table table : currentModel.getTables()){
             if(table.isTemporary()){
-                dropTable(connection , intermediateModel , table , true);
+                dropTable(connection , currentModel , table , true);
                 intermediateModel.removeTable(table);
             }
         }
