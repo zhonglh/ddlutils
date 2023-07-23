@@ -22,10 +22,14 @@ package org.apache.ddlutils.alteration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ddlutils.PlatformInfo;
+import org.apache.ddlutils.context.AlertThreadLocal;
 import org.apache.ddlutils.model.CloneHelper;
 import org.apache.ddlutils.model.Column;
 import org.apache.ddlutils.model.Database;
@@ -180,8 +184,27 @@ public class ModelComparator
 
         changes.addAll(checkForAddedTables(sourceModel, intermediateModel, targetModel));
         changes.addAll(checkForAddedForeignKeys(sourceModel, intermediateModel, targetModel));
-        changes.addAll(checkForRemovedTables(sourceModel, intermediateModel, targetModel));
+        List removeTableChanges = checkForRemovedTables(sourceModel, intermediateModel, targetModel);
+        if(removeTableChanges != null && !removeTableChanges.isEmpty()) {
+            List<String> dropTableNames = AlertThreadLocal.getDropTableNames();
+            if(dropTableNames != null && !dropTableNames.isEmpty()) {
+                checkDropTable(removeTableChanges,dropTableNames);
+                changes.addAll(removeTableChanges);
+
+            }
+        }
+        AlertThreadLocal.removeDropTableNames();
         return changes;
+    }
+
+    public void checkDropTable(List<RemoveTableChange> tableChanges , List<String> dropTableNames){
+        Set<String> dropTableNameSet = dropTableNames.stream().map(String::toLowerCase).collect(Collectors.toSet());
+        for(RemoveTableChange change : tableChanges){
+            String tableName = change.getChangedTable().toLowerCase();
+            if(!dropTableNameSet.contains(tableName)){
+                throw new RuntimeException("删除错误");
+            }
+        }
     }
 
     /**
