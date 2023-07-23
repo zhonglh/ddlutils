@@ -23,15 +23,7 @@ import java.io.IOException;
 import java.sql.Types;
 
 import org.apache.ddlutils.PlatformInfo;
-import org.apache.ddlutils.alteration.AddColumnChange;
-import org.apache.ddlutils.alteration.AddPrimaryKeyChange;
-import org.apache.ddlutils.alteration.ColumnDefinitionChange;
-import org.apache.ddlutils.alteration.ModelComparator;
-import org.apache.ddlutils.alteration.PrimaryKeyChange;
-import org.apache.ddlutils.alteration.RemoveColumnChange;
-import org.apache.ddlutils.alteration.RemovePrimaryKeyChange;
-import org.apache.ddlutils.alteration.TableChange;
-import org.apache.ddlutils.alteration.TableDefinitionChangesPredicate;
+import org.apache.ddlutils.alteration.*;
 import org.apache.ddlutils.model.CascadeActionEnum;
 import org.apache.ddlutils.model.Column;
 import org.apache.ddlutils.model.Database;
@@ -270,4 +262,6 @@ public class MySqlPlatform extends PlatformImplBase
         getSqlBuilder().createPrimaryKey(changedTable, newPKColumns);
         change.apply(currentModel, isDelimitedIdentifierModeOn());
     }
+
+
 }
