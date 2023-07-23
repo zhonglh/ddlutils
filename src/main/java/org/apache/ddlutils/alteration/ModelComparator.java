@@ -168,6 +168,9 @@ public class ModelComparator
             Table intermediateTable = intermediateModel.getTable(tableIdx);
             Table sourceTable       = sourceModel.findTable(intermediateTable.getName(), _caseSensitive);
             Table targetTable       = targetModel.findTable(intermediateTable.getName(), _caseSensitive);
+            if(sourceModel == null || targetTable == null){
+                continue;
+            }
             List  tableChanges      = compareTables(sourceModel, sourceTable,
                                                     intermediateModel, intermediateTable,
                                                     targetModel, targetTable);
@@ -177,6 +180,7 @@ public class ModelComparator
 
         changes.addAll(checkForAddedTables(sourceModel, intermediateModel, targetModel));
         changes.addAll(checkForAddedForeignKeys(sourceModel, intermediateModel, targetModel));
+        changes.addAll(checkForRemovedTables(sourceModel, intermediateModel, targetModel));
         return changes;
     }
 
